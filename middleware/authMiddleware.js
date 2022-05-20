@@ -7,7 +7,6 @@ const { header } = require("express/lib/request");
 const protect = asyncHandler(async (req, res, next) => {
   let token;
   //   tokens start with bearer in auth object within req header
-  console.log(req);
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -28,7 +27,6 @@ const protect = asyncHandler(async (req, res, next) => {
       //calling the controller function to comm with db
       next();
     } catch (error) {
-      console.log(error);
       res.status(401);
       throw new Error("not authorized");
     }

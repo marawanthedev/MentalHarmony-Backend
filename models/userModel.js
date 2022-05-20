@@ -24,7 +24,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: false,
     },
-    address: {},
+    location: {
+      type: String,
+      required: false,
+    },
     faculty_name: {
       type: String,
       required: false,
@@ -38,6 +41,10 @@ const userSchema = mongoose.Schema(
       required: false,
     },
     speciality: {
+      type: String,
+      required: false,
+    },
+    description: {
       type: String,
       required: false,
     },
