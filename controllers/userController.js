@@ -168,7 +168,7 @@ const getUserByType = asyncHandler(async (req, res) => {
         location: user.location,
       };
     }
-    
+
     if (type === "student") {
       filteredUsers[index] = {
         name: user.name,
@@ -180,8 +180,23 @@ const getUserByType = asyncHandler(async (req, res) => {
   });
   //*Assert guide, (assertionFactor,DataToBeReturned,errorMessage,res object)
   assert(filteredUsers, filteredUsers, "Users were not found", res);
+});
 
-  // res.status(200).json(filteredUsers);
+//@desc delete User by category
+//@route Delete/api/user?id=id
+//@access Private
+
+const deleteUser = asyncHandler(async (req, res) => {
+  //**needs to be only accessible to admins
+  const { type } = req.user;
+  const { id } = req.query;
+  if (type === "admin") {
+    const user = await User.findByIdAndRemove(id);
+    //*Assert guide, (assertionFactor,DataToBeReturned,errorMessage,res object)
+    assert(user, user, "User deletion was not successful", res);
+  } else {
+    res.status(401).json("Deleting user is only allowed by admins!");
+  }
 });
 
 //@desc get User Data
@@ -209,4 +224,5 @@ module.exports = {
   getUserByType,
   getUser,
   updateUser,
+  deleteUser,
 };
