@@ -22,31 +22,27 @@ const userSchema = mongoose.Schema(
     },
     phone_number: {
       type: String,
-      required: false,
     },
     location: {
       type: String,
-      required: false,
     },
     faculty_name: {
       type: String,
-      required: false,
     },
     birth_date: {
       type: Date,
-      required: false,
     },
     specialKey: {
       type: String,
-      required: false,
     },
     speciality: {
       type: String,
-      required: false,
     },
     description: {
       type: String,
-      required: false,
+    },
+    approval_status: {
+      type: Boolean,
     },
   },
   {

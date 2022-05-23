@@ -3,10 +3,24 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const assert = require("../services/assertion");
+const { addApprovalRequest } = require("./approvalRequestController");
+const {
+  verifyLoginCredentials,
+  verifyLoginPermission,
+} = require("../services/user");
 
+//@desc updateUserApprovalStatus accepts user signup request
+//@route  none
+//@access Private to the approval request controller
+
+const updateUserApprovalStatus = async (user_id) => {
+  const user = await User.findByIdAndUpdate(user_id, { approval_status: true });
+  return user;
+};
 //@desc registerUser
 //@route post/api/users
 //@access Public
+
 const registerUser = asyncHandler(async (req, res) => {
   const validTypes = ["student", "serviceprovider", "admin"];
   let validType = false;
@@ -19,6 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
     specialKey,
     description,
     phone_number,
+    speciality,
     location,
   } = req.body;
 
@@ -51,30 +66,54 @@ const registerUser = asyncHandler(async (req, res) => {
   //   salt needed for hasing the password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
+  let user;
 
-  const user = await User.create({
-    name,
-    email,
-    password: hashedPassword,
-    specialKey,
-    type,
-    faculty_name: faculty_name ? faculty_name : null,
-    description: description ? description : null,
-    phone_number: phone_number ? phone_number : null,
-    location: location ? location : null,
-  });
+  if (type === "student") {
+    user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      type,
+      faculty_name: faculty_name ? faculty_name : null,
+      phone_number: phone_number ? phone_number : null,
+      location: location ? location : null,
+    });
+    assert(
+      user,
+      {
+        name: user.email,
+        type: user.type,
+        token: generateToken(user._id),
+      },
+      "invalid new Data",
+      res
+    );
+  }
+  if (type === "serviceprovider") {
+    user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      specialKey,
+      type,
+      speciality: speciality ? speciality : null,
+      description: description ? description : null,
+      phone_number: phone_number ? phone_number : null,
+      location: location ? location : null,
+      approval_status: false,
+    });
 
-  //*Assert guide, (assertionFactor,DataToBeReturned,errorMessage,res object)
-  assert(
-    user,
-    {
-      name: user.email,
-      type: user.type,
-      token: generateToken(user._id),
-    },
-    "invalid new Data",
-    res
-  );
+    if (user) {
+      const approvalRequest = await addApprovalRequest(user._id);
+      res.status(200).json({
+        name: user.email,
+        type: user.type,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(400).json({ message: "Signup has failed" });
+    }
+  }
 
   res.json({ message: "Register user" });
 });
@@ -84,24 +123,26 @@ const registerUser = asyncHandler(async (req, res) => {
 //@access Public
 
 const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email } = req.body;
 
   //check for user email
   const user = await User.findOne({ email });
-
-  //   bcrypt compare compares the unhashed password which is sent throught the params with the stored hasehed password of the previously signed up user to maintain security stuff
-
-  if (user && (await bcrypt.compare(password, user.password))) {
-    res.status(201).json({
-      name: user.email,
-      type: user.type,
-      token: generateToken(user._id),
-    });
+  if (verifyLoginPermission(user)) {
+    if (verifyLoginCredentials(user)) {
+      res.status(201).json({
+        name: user.email,
+        type: user.type,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(400);
+      throw new Error("invalid credentials");
+    }
   } else {
-    res.status(400);
-    throw new Error("invalid credentials");
+    throw new Error(
+      "Login is un-authorized or invalid credentials were entered"
+    );
   }
-  res.json({ message: "login user" });
 });
 
 //@desc get User by Id
@@ -109,38 +150,40 @@ const loginUser = asyncHandler(async (req, res) => {
 //@access Private
 
 const getUser = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
-  const user = await User.findById(_id);
+  const { _id } = req.user ? req.user : req.body;
 
-  const objectToBeReturned = {
-    location: user.location ? user.location : null,
-    name: user.name,
-    phone_number: user.phone_number ? user.phone_number : null,
-    type: user.type,
-    ...(user.type === "student" && {
-      faculty_name: user.faculty_name ? user.faculty_name : null,
-    }),
-    ...(user.type === "serviceprovider" && {
-      description: user.description ? user.description : null,
-    }),
-    ...(user.type === "serviceprovider" && {
-      speciality: user.speciality ? user.speciality : null,
-    }),
-  };
+  if (_id) {
+    const user = await User.findById(_id);
+    const objectToBeReturned = {
+      location: user.location ? user.location : null,
+      name: user.name,
+      phone_number: user.phone_number ? user.phone_number : null,
+      type: user.type,
+      ...(user.type === "student" && {
+        faculty_name: user.faculty_name ? user.faculty_name : null,
+      }),
+      ...(user.type === "serviceprovider" && {
+        description: user.description ? user.description : null,
+      }),
+      ...(user.type === "serviceprovider" && {
+        speciality: user.speciality ? user.speciality : null,
+      }),
+    };
 
-  //*Assert guide, (assertionFactor,DataToBeReturned,errorMessage,res object)
-  assert(user, objectToBeReturned, "Could not get user by id", res);
+    req.user = null;
+
+    //*Assert guide, (assertionFactor,DataToBeReturned,errorMessage,res object)
+    assert(user, objectToBeReturned, "Could not get user by id", res);
+  }
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  const { _id, type } = req.user;
-  let user;
-  if (type === "student") {
-    user = await User.findByIdAndUpdate(_id, { ...req.body }, { new: true });
-  }
-  if (type === "serviceprovider") {
-    user = await User.findByIdAndUpdate(_id, { ...req.body }, { new: true });
-  }
+  const { _id } = req.user;
+  const user = await User.findByIdAndUpdate(
+    _id,
+    { ...req.body },
+    { new: true }
+  );
 
   //*Assert guide, (assertionFactor,DataToBeReturned,errorMessage,res object)
   assert(user, user, "User update was not successful", res);
@@ -218,6 +261,7 @@ const generateToken = (id) => {
 };
 
 module.exports = {
+  updateUserApprovalStatus,
   registerUser,
   loginUser,
   getMe,

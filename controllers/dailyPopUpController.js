@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const DailyPopUp = require("../models/dailyPopUpModel");
 const assert = require("../services/assertion");
-
 //@desc add article attachment
 //@route post/api/users
 //@access Public
@@ -50,18 +49,4 @@ const getArticles = asyncHandler(async (req, res) => {
   );
 });
 
-const addFeelingSubmission = asyncHandler(async (req, res) => {
-  const { feeling } = req.body;
-
-  const feelingSubmission = await DailyPopUp.create({
-    submitted_feeling: feeling,
-  });
-  assert(
-    feelingSubmission,
-    feelingSubmission,
-    "Feeling submission has not succeeded",
-    res
-  );
-});
-
-module.exports = { addArticleAttachment, getArticles, addFeelingSubmission };
+module.exports = { addArticleAttachment, getArticles };

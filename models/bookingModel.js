@@ -35,4 +35,4 @@ const bookingSchema = mongoose.Schema(
   { timestaps: true }
 );
 
-module.exports = mongoose.model("Goal", goalSchema);
+module.exports = mongoose.model("Goal", bookingSchema);
