@@ -1,38 +1,35 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
+
+// requester: { type: Schema.Types.ObjectId, ref: "User" },
 
 const bookingSchema = mongoose.Schema(
   {
     requestStatus: {
       type: String,
-      require: true,
+      required: true,
     },
-    review: {
+    rate: {
       type: String,
-      require: true,
+      required: false,
     },
-    student_id: {
-      type: String,
-      require: [true, "Student id is needs to be included"],
+    student: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "Student id is needs to be included"],
     },
     serviceProvider: {
-      type: String,
-      require: [true, "Service provider id is needs to be included"],
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "Service provider id is needs to be included"],
     },
     meeting_link: {
       type: String,
-      require: false,
-    },
-    date: {
-      type: String,
-      require: false,
-    },
-    time: {
-      type: String,
-      require: false,
+      required: false,
     },
   },
 
   { timestaps: true }
 );
 
-module.exports = mongoose.model("Goal", bookingSchema);
+module.exports = mongoose.model("Booking", bookingSchema);

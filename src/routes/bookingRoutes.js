@@ -1,12 +1,17 @@
 const express = require("express");
 const router = express.Router();
+const { protect } = require("../middleware/authMiddleware");
+const {
+  addBooking,
+  getBookings,
+  attachBookingMeetingLink,
+  reviewBooking,
+} = require("../controllers/bookingController");
 
-// const { protect } = require("../middleware/authMiddleware");
-
-// second arguments is for middle ware functions
-// last one is for controllre functionst that connect with db
-
-
-
+router.get("", getBookings);
+router.post("", protect, addBooking);
+router.post("/attachLink", attachBookingMeetingLink);
+router.post("/review", reviewBooking);
 
 module.exports = router;
+
