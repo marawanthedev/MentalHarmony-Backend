@@ -4,7 +4,6 @@ const router = express.Router();
 const {
   registerUser,
   loginUser,
-  getMe,
   getUserByType,
   getUser,
   updateUser,
@@ -20,7 +19,5 @@ router.put("/update", protect, updateUser);
 router.delete("/deleteUser", protect, deleteUser); 
 
 // second arguments is for middle ware functions
-// last one is for controller functions that connect with db
-router.get("/me", protect, getMe);
 
 module.exports = router;

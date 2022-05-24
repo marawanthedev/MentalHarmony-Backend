@@ -1,15 +1,14 @@
 const express = require("express");
 const dotEnv = require("dotenv").config();
 const port = process.env.PORT || 5000;
-const userRoutes = require("./routes/userRoutes");
-const dailyPopUpRoutes = require("./routes/dailyPopUpRoutes");
-const feelingsRoutes = require("./routes/feelingRoutes");
-const approvalRequestRoutes = require("./routes/approvalRequestRoute");
-const { errorHandler } = require("./middleware/errorMiddleWare");
+const userRoutes = require("./src/routes/userRoutes");
+const dailyPopUpRoutes = require("./src/routes/dailyPopUpRoutes");
+const feelingsRoutes = require("./src/routes/feelingRoutes");
+const approvalRequestRoutes = require("./src/routes/approvalRequestRoute");
+const { errorHandler } = require("./src/middleware/errorMiddleWare");
 const colors = require("colors");
 const { connectDB } = require("./config/db");
 const cors = require("cors");
-const { header } = require("express/lib/response");
 connectDB();
 
 const app = express();

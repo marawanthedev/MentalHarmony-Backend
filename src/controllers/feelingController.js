@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Feeling = require("../models/feelingsModel");
-const assert = require("../services/assertion");
+const assert = require("../helpers/assertion");
 
 //@desc add feeling submission
 //@route post/feeling

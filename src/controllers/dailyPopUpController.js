@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const DailyPopUp = require("../models/dailyPopUpModel");
-const assert = require("../services/assertion");
+const assert = require("../helpers/assertion");
 //@desc add article attachment
 //@route post/api/users
 //@access Public

@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const ApprovalRequest = require("../models/approvalRequest");
-const assert = require("../services/assertion");
+const assert = require("../helpers/assertion");
 
 //@desc add approval submission
 //@route is not there, only called by user controller
@@ -38,9 +38,9 @@ const acceptApprovalRequest = asyncHandler(async (req, res) => {
   const acceptedRequest = await ApprovalRequest.findByIdAndUpdate(id, {
     isApproved: true,
   });
-
   const { updateUserApprovalStatus } = require("./userController");
 
+  
   //updates user approval status to true
   const updatedUser = await updateUserApprovalStatus(
     acceptedRequest.requester.toString()
