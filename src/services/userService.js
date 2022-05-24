@@ -4,19 +4,12 @@ const {
 } = require("../validation/verifyLogin");
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const {
   addApprovalRequest,
 } = require("../controllers/approvalRequestController");
+const { generateToken } = require("../helpers/generateToken");
 
 class UserService {
-  generateToken = (id) => {
-    //   tokens will include the user id which might be used in making rest calls
-    // while keeping the users data secure and un visible
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-      expiresIn: "30d",
-    });
-  };
   registerUser = async ({
     email,
     password,
@@ -53,7 +46,7 @@ class UserService {
         user: {
           name: user.email,
           type: user.type,
-          token: this.generateToken(user._id),
+          token: generateToken(user._id),
         },
       };
     }
@@ -78,7 +71,7 @@ class UserService {
           user: {
             name: user.email,
             type: user.type,
-            token: this.generateToken(user._id),
+            token: generateToken(user._id),
           },
         };
       } else {
@@ -96,7 +89,7 @@ class UserService {
         user: {
           name: user.email,
           type: user.type,
-          token: this.generateToken(user._id),
+          token: generateToken(user._id),
         },
       };
     }

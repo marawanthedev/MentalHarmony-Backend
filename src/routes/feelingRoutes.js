@@ -6,8 +6,6 @@ const {
   getFeelings,
 } = require("../controllers/feelingController");
 
-// const { protect } = require("../middleware/authMiddleware");
-
 router.post("", addFeelingSubmission);
 router.get("", getFeelings);
 

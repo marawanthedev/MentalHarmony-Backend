@@ -6,9 +6,9 @@ const {
   getArticles,
 } = require("../controllers/dailyPopUpController");
 
-// const { protect } = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authMiddleware");
 
-router.post("/attachArticle", addArticleAttachment);
+router.post("/attachArticle", protect, addArticleAttachment);
 router.get("/articles", getArticles);
 
 module.exports = router;

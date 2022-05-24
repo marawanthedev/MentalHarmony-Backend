@@ -8,7 +8,6 @@ const assert = require("../helpers/assertion");
 
 const addFeelingSubmission = asyncHandler(async (req, res) => {
   const { feeling } = req.body;
-
   const feelingSubmission = await Feeling.create({
     value: feeling,
   });
@@ -26,4 +25,3 @@ const getFeelings = asyncHandler(async (req, res) => {
 });
 
 module.exports = { addFeelingSubmission, getFeelings };
-

@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const assert = require("../helpers/assertion");
 const UserService = require("../services/userService");
-
+const { generateToken } = require("../helpers/generateToken");
 //serviceObject instantiation
 const userServiceObject = new UserService();
 
