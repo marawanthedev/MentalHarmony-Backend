@@ -121,9 +121,7 @@ const deleteUser = asyncHandler(async (req, res) => {
   if (type === "admin") {
     const user = await userServiceObject.deleteUser(id);
     assert(user, user, "User deletion was not successful", res);
-  } else {
-    res.status(401).json("Deleting user is only allowed by admins!");
-  }
+  } else res.status(404).json("Deleting user is only allowed by admins!");
 });
 
 // generate new token

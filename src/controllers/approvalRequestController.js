@@ -1,57 +1,50 @@
 const asyncHandler = require("express-async-handler");
-const ApprovalRequest = require("../models/approvalRequest");
 const assert = require("../helpers/assertion");
+const ApprovalRequestService = require("../services/approvalRequestService");
+const approvalRequestServiceObj = new ApprovalRequestService();
 
 //@desc add approval submission
 //@route is not there, only called by user controller
 //@access Private
 const addApprovalRequest = async (requester) => {
-  const approvalRequest = await ApprovalRequest.create({
-    requester,
-    isApproved: false,
-  });
-  return approvalRequest;
+  const approvalRequest = await approvalRequestServiceObj.addApprovalRequest(
+    requester
+  );
+  assert(approvalRequest, approvalRequest, "Request addition failed", res);
 };
 
 const getApprovalRequests = asyncHandler(async (req, res) => {
   const { isApproved } = req.query;
-  const approvalRequests = await ApprovalRequest.find({ isApproved }).populate(
-    "requester",
-    {
-      name: 1,
-      speciality: 1,
-      phone_number: 1,
-      location: 1,
-    }
-  );
+  const user = req.user;
 
-  assert(
-    approvalRequests,
-    approvalRequests,
-    "No stored feelings were found",
-    res
-  );
+  if (user.type === "admin") {
+    if (isApproved) {
+      const approvalRequests =
+        await approvalRequestServiceObj.getApprovalRequests(isApproved);
+      assert(
+        approvalRequests,
+        approvalRequests,
+        "No stored feelings were found",
+        res
+      );
+    } else
+      res.status(404).json({ message: "Approval request retrieval failed" });
+  } else res.status(404).json({ message: "Permission denied" });
 });
 
 const acceptApprovalRequest = asyncHandler(async (req, res) => {
   const { id } = req.query;
-  const acceptedRequest = await ApprovalRequest.findByIdAndUpdate(id, {
-    isApproved: true,
-  });
-  const { updateUserApprovalStatus } = require("./userController");
 
-  
   //updates user approval status to true
-  const updatedUser = await updateUserApprovalStatus(
-    acceptedRequest.requester.toString()
-  );
+  const { acceptedRequest, updatedUser } =
+    await approvalRequestServiceObj.acceptApprovalRequest(id);
 
-  assert(
-    acceptedRequest,
-    acceptedRequest,
-    "No stored feelings were found",
-    res
-  );
+  if (updatedUser && acceptedRequest)
+    res.status(200).json(acceptApprovalRequest);
+  else if (!updatedUser && !acceptApprovalRequest)
+    res.status(404).json({ message: "User approval Status was not updated" });
+  else if (!acceptApprovalRequest && updatedUser)
+    res.status(404).json({ message: "Request Status was not updated" });
 });
 
 module.exports = {

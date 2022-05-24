@@ -23,9 +23,8 @@ class UserService {
     speciality,
   }) => {
     const userExists = await User.findOne({ email });
-    if (userExists) {
-      return { message: "User already exists" };
-    }
+    if (userExists) return { message: "User already exists" };
+
     // hashing the password
     //   salt needed for hasing the password
     const salt = await bcrypt.genSalt(10);
@@ -74,9 +73,7 @@ class UserService {
             token: generateToken(user._id),
           },
         };
-      } else {
-        return { message: "Signup has failed" };
-      }
+      } else return { message: "Signup has failed" };
     }
     if (type === "admin") {
       user = await User.create({
@@ -98,17 +95,13 @@ class UserService {
     //check for user email
     const user = await User.findOne({ email });
     if (verifyLoginPermission(user)) {
-      if (verifyLoginCredentials(user, password)) {
-        return { user, message: "" };
-      } else {
-        return { user: null, message: "invalid credentials" };
-      }
-    } else {
+      if (verifyLoginCredentials(user, password)) return { user, message: "" };
+      else return { user: null, message: "invalid credentials" };
+    } else
       return {
         user: null,
         message: "Login is un-authorized or invalid credentials were entered",
       };
-    }
   };
 
   deleteUser = async (id) => {

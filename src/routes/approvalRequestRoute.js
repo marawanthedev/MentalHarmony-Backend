@@ -6,9 +6,9 @@ const {
   acceptApprovalRequest,
 } = require("../controllers/approvalRequestController");
 
-// const { protect } = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authMiddleware");
 
-router.get("", getApprovalRequests);
+router.get("", protect, getApprovalRequests);
 router.post("/accept", acceptApprovalRequest);
 
 module.exports = router;
