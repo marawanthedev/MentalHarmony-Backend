@@ -71,6 +71,7 @@ class UserService {
             name: user.email,
             type: user.type,
             token: generateToken(user._id),
+            approval_status: user.approval_status,
           },
         };
       } else return { message: "Signup has failed" };
@@ -119,7 +120,7 @@ class UserService {
     const filteredUsers = [];
 
     users.forEach((user, index) => {
-      if (type === "serviceprovider") {
+      if (type === "serviceprovider" && user.approval_status) {
         filteredUsers[index] = {
           _id: user._id,
           name: user.name,

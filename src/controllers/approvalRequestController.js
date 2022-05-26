@@ -10,7 +10,8 @@ const addApprovalRequest = async (requester) => {
   const approvalRequest = await approvalRequestServiceObj.addApprovalRequest(
     requester
   );
-  assert(approvalRequest, approvalRequest, "Request addition failed", res);
+  if (approvalRequest) return approvalRequest;
+  else return null;
 };
 
 const getApprovalRequests = asyncHandler(async (req, res) => {
