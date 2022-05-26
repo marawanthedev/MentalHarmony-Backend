@@ -15,8 +15,9 @@ class BookingService {
     });
     return booking;
   };
-  reviewBooking = async (bookingId, rate) => {
-    const reviewedBooking = await Booking.findByIdAndUpdate(bookingId, {
+
+  rateBooking = async (bookingId, rate) => {
+    const ratedBooking = await Booking.findByIdAndUpdate(bookingId, {
       rate,
     });
     return reviewedBooking;
@@ -26,6 +27,25 @@ class BookingService {
       meeting_link,
     });
     return bookingWithAttachedLink;
+  };
+
+  acceptBooking = async (bookingId) => {
+    const acceptedBooking = await Booking.findByIdAndUpdate(bookingId, {
+      requestStatus: "accepted",
+    });
+    return acceptedBooking;
+  };
+  completeBooking = async (bookingId) => {
+    const completedBooking = await Booking.findByIdAndUpdate(bookingId, {
+      requestStatus: "completed",
+    });
+    return completedBooking;
+  };
+  declineBooking = async (bookingId) => {
+    const acceptBooking = await Booking.findByIdAndUpdate(bookingId, {
+      requestStatus: "declined",
+    });
+    return acceptBooking;
   };
 }
 

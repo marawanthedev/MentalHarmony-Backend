@@ -5,13 +5,20 @@ const {
   addBooking,
   getBookings,
   attachBookingMeetingLink,
-  reviewBooking,
+  rateBooking,
+  getUserBookings,
+  acceptBooking,
+  declineBooking,
+  completeBooking,
 } = require("../controllers/bookingController");
 
 router.get("", getBookings);
+router.get("/currentUser", protect, getUserBookings);
 router.post("", protect, addBooking);
 router.post("/attachLink", attachBookingMeetingLink);
-router.post("/review", reviewBooking);
+router.post("/rate", rateBooking);
+router.post("/accept", acceptBooking);
+router.post("/complete", completeBooking);
+// router.post("/decline", declineBooking);
 
 module.exports = router;
-
