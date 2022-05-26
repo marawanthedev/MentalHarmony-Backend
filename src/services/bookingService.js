@@ -20,7 +20,7 @@ class BookingService {
     const ratedBooking = await Booking.findByIdAndUpdate(bookingId, {
       rate,
     });
-    return reviewedBooking;
+    return ratedBooking;
   };
   attachBookingMeetingLink = async (bookingId, meeting_link) => {
     const bookingWithAttachedLink = await Booking.findByIdAndUpdate(bookingId, {
