@@ -12,7 +12,7 @@ const addArticleAttachment = asyncHandler(async (req, res) => {
   const user = req.user;
 
   if (user.type === "admin") {
-    const dailyPopUp = dailyPopUpObject.addArticleAttachment({
+    const dailyPopUp = await dailyPopUpObject.addArticleAttachment({
       article_feeling_relation,
       article_url,
     });

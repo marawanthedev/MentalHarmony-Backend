@@ -84,10 +84,17 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const getUser = asyncHandler(async (req, res) => {
   const { _id } = req.user ? req.user : req.body;
-
   if (_id) {
-    const { user, objectToBeReturned } = await userServiceObject.getUser(_id);
+    const { user, objectToBeReturned } = await userServiceObject.getUser(
+      _id.toString()
+    );
     req.user = null;
+
+    // if (user) {
+    //   res.status(200).json(objectToBeReturned);
+    // }
+    //should be fixed
+
     assert(user, objectToBeReturned, "Could not get user by id", res);
   }
 });

@@ -17,7 +17,6 @@ class UserService {
     faculty_name,
     phone_number,
     location,
-    specialKey,
     description,
     name,
     speciality,
@@ -54,7 +53,7 @@ class UserService {
         name,
         email,
         password: hashedPassword,
-        specialKey,
+
         type,
         speciality: speciality ? speciality : null,
         description: description ? description : null,
@@ -118,13 +117,12 @@ class UserService {
     const users = await User.find({ type: type });
 
     const filteredUsers = [];
-
     users.forEach((user, index) => {
       if (type === "serviceprovider" && user.approval_status) {
         filteredUsers[index] = {
           _id: user._id,
           name: user.name,
-          speciality: user.speciality,
+          speciality: user.speciality ? user.speciality : null,
           description: user.description ? user.description : null,
           phone_number: user.phone_number,
           location: user.location,
@@ -143,6 +141,7 @@ class UserService {
     return filteredUsers;
   };
   getUser = async (id) => {
+    console.log(id);
     const user = await User.findById(id);
     const objectToBeReturned = {
       location: user.location ? user.location : null,

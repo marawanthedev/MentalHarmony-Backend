@@ -29,12 +29,6 @@ const userSchema = mongoose.Schema(
     faculty_name: {
       type: String,
     },
-    birth_date: {
-      type: Date,
-    },
-    specialKey: {
-      type: String,
-    },
     speciality: {
       type: String,
     },

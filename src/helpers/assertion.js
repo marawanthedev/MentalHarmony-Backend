@@ -9,8 +9,7 @@ function assert(assertionFactor, dataToBeReturned, errorMessage, res) {
     assertionFactor !== undefined &&
     assertionFactor !== null &&
     assertionFactor !== "" &&
-    Array.isArray(assertionFactor) &&
-    assertionFactor.length > 0 &&
+    assertionFactor !== [] &&
     assertionFactor !== {}
   ) {
     return res.status(200).json(dataToBeReturned);

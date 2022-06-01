@@ -25,7 +25,7 @@ const getApprovalRequests = asyncHandler(async (req, res) => {
       assert(
         approvalRequests,
         approvalRequests,
-        "No stored feelings were found",
+        "No approval requests were found",
         res
       );
     } else
