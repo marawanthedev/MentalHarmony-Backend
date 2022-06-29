@@ -77,6 +77,11 @@ const declineBooking = asyncHandler(async (req, res) => {
   assert(declinedBooking, declinedBooking, "Accepting booking has failed", res);
 });
 
+const removeBookings=async(user)=>{
+  console.log(user)
+  const removedBooknigs=await bookingObject.removeBookings(user._id);
+  assert(removedBooknigs,removedBooknigs, "bookings removal has failed", res);
+}
 module.exports = {
   getBookings,
   addBooking,
@@ -86,4 +91,5 @@ module.exports = {
   acceptBooking,
   declineBooking,
   completeBooking,
+  removeBookings
 };

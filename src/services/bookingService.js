@@ -47,6 +47,10 @@ class BookingService {
     });
     return acceptBooking;
   };
+  removeBookings=async(userId)=>{
+    const deleteBooking=await Booking.deleteMany({serviceProvider:userId})
+    return deleteBooking
+  }
 }
 
 module.exports = BookingService;

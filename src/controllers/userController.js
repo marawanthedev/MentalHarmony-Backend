@@ -46,7 +46,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // check if user exists
   const { user, message } = await userServiceObject.registerUser(req.body);
-
+  console.log('x')
+ console.log(user)
   if (user) {
     res.status(200).json(user);
   } else {

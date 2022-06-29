@@ -8,7 +8,7 @@ const {
   addApprovalRequest,
 } = require("../controllers/approvalRequestController");
 const { generateToken } = require("../helpers/generateToken");
-
+const {removeBookings}=require("../controllers/bookingController")
 class UserService {
   registerUser = async ({
     email,
@@ -106,6 +106,8 @@ class UserService {
 
   deleteUser = async (id) => {
     const user = await User.findByIdAndRemove(id);
+    // removing bookings for that user
+    await removeBookings(user)
     return user;
   };
   updateUser = async (id, data) => {

@@ -34,4 +34,5 @@ app.use("/feeling", feelingsRoutes);
 app.use("/requests", approvalRequestRoutes);
 app.use("/booking", bookingRoutes);
 
-app.listen(port, () => {});
+app.listen(port, () => {
+});
