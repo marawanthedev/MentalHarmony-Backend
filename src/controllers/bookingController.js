@@ -12,14 +12,14 @@ const getUserBookings = asyncHandler(async (req, res) => {
   const bookings = await bookingObject.getBookings();
   //needs further refactoring if possible
   const userBookings = [];
-
   if (bookings.length > 0) {
     bookings.forEach((booking) => {
+      console.log(booking)
       if (type === "student")
         if (booking.student._id.toString() === _id.toString())
           userBookings.push(booking);
-
       if (type === "serviceprovider")
+      if(booking.serviceProvider)
         if (booking.serviceProvider._id.toString() === _id.toString())
           userBookings.push(booking);
     });
