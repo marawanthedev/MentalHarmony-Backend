@@ -3,7 +3,7 @@ const Booking = require("../models/bookingModel");
 class BookingService {
   getBookings = async () => {
     const bookings = await Booking.find()
-      .populate("student", { name: 1, faculty_name: 1 })
+      .populate("student", { name: 1, faculty_name: 1,phone_number: 1 })
       .populate("serviceProvider", { name: 1, phone_number: 1 });
     return bookings;
   };
